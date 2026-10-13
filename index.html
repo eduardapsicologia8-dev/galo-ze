@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galo Zé — Gestão de Pessoas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: barra lateral fixa com a marca + área de trabalho; no celular a barra vira faixa rolável no topo */
+:root{
+  --amber:#E8A000;--amber-ink:#5a3a00;--wine:#8B1010;--ok:#2f7a4a;
+  --bg:#f6f3ef;--card:#ffffff;--ink:#2b2522;--muted:#75695f;--line:#e6ded4;--soft:#f1ebe3;
+  --f-display:"Bricolage Grotesque",system-ui,sans-serif;--f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--amber:#F2B53A;--amber-ink:#2a1c00;--wine:#e07a6e;--ok:#6cc08d;--bg:#1b1816;--card:#25211e;--ink:#efe8e1;--muted:#a99d92;--line:#3a3430;--soft:#2e2925;color-scheme:dark}}
+:root[data-theme="dark"]{--amber:#F2B53A;--amber-ink:#2a1c00;--wine:#e07a6e;--ok:#6cc08d;--bg:#1b1816;--card:#25211e;--ink:#efe8e1;--muted:#a99d92;--line:#3a3430;--soft:#2e2925;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);display:flex;min-height:100vh}
+nav{width:220px;background:var(--card);border-right:1px solid var(--line);padding:16px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+.lg{width:100%;max-width:140px;display:block;margin:0 auto 12px}
+nav button{all:unset;display:block;padding:9px 12px;border-radius:8px;cursor:pointer;color:var(--ink)}
+nav button:hover{background:var(--soft)}
+nav button.on{background:var(--amber);color:var(--amber-ink);font-weight:600}
+nav button:focus-visible,.btn:focus-visible,.link:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+.who{margin-top:12px;padding:10px 12px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+.who b{display:block;color:var(--ink);font-size:13px}
+main{flex:1;padding-block:22px;padding-inline:22px;min-width:0;max-width:1200px}
+h1{margin:0 0 2px;font:700 24px/1.2 var(--f-display);color:var(--wine);text-wrap:balance}
+h2{font:600 16px/1.3 var(--f-display);margin:0 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.sub{color:var(--muted);margin-bottom:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px;min-width:0}
+.grid .card{margin:0}
+.k{font:700 28px/1.1 var(--f-display);color:var(--amber);font-variant-numeric:tabular-nums}.k.r{color:var(--wine)}
+.kl{font-size:13px;color:var(--muted)}
+.bar{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}.bar span{width:150px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar i{display:block;height:10px;background:var(--amber);border-radius:5px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+button,input,select,textarea{font:inherit;color:var(--ink)}
+.btn{background:var(--amber);color:var(--amber-ink);border:0;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600}
+.btn.s{background:var(--wine);color:#fff}.btn.g{background:none;color:var(--wine);padding:4px 8px;font-weight:500}
+.btn:disabled{opacity:.5;cursor:default}
+label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+label .req{color:var(--wine)}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);margin-bottom:12px}
+input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:var(--wine)}
+.top{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}.top input{margin:0;flex:1;min-width:160px}
+.tag{font-size:12px;padding:2px 9px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}
+.tag.ok{color:var(--ok)}.tag.bad{color:var(--wine)}
+.al{padding:9px 0;border-bottom:1px solid var(--line)}.al:last-child{border:0}
+.tl{border-left:3px solid var(--amber);padding-left:14px;margin-left:6px;display:grid;gap:12px}.tl small{color:var(--muted)}
+#md{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+#md>div{background:var(--card);border-radius:14px;padding:20px;width:100%;max-width:460px;max-height:90vh;overflow:auto}
+.fc{cursor:pointer;text-align:left;width:100%;font:inherit}.fc:hover{border-color:var(--amber)}
+.link{all:unset;color:var(--wine);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.err{color:var(--wine);font-size:13px;margin:-6px 0 10px}
+.note{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.note b{color:var(--wine)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:20;max-width:90vw}
+.acc td{text-align:center}.acc td:first-child,.acc th:first-child{text-align:left}
+@media(max-width:720px){body{flex-direction:column}nav{width:100%;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px 12px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;align-items:center}.lg{width:42px;margin:0 8px 0 0}nav button{white-space:nowrap}.who{display:none}main{padding-inline:16px;padding-block:16px}}
+
+body.login nav{display:none}
+body.login main{display:flex;justify-content:center;max-width:none}
+.lbox{width:100%;max-width:380px;text-align:center;padding-top:6vh}.lbox .lg{max-width:120px}.lbox form{text-align:left;margin-top:14px}
+.cks{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px}
+.ck{display:flex;align-items:center;gap:6px;color:var(--ink);margin:0;font-size:14px;cursor:pointer}
+.pr{display:grid;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}.pr:last-child{border:0}
+.pa{display:flex;gap:6px;flex-wrap:wrap}
+.dl{margin-bottom:12px}.dl small{color:var(--muted);display:block;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+
+.fcard{display:flex;flex-direction:column;gap:8px;align-items:flex-start}.fcard .open{all:unset;cursor:pointer;display:block;width:100%}.fcard .open:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+.btn.sm{padding:2px 0;font-size:13px}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 18px}.info small{display:block;color:var(--muted);font-size:12px}
+.acts{white-space:nowrap}
+.frow{display:grid;grid-template-columns:minmax(140px,240px) minmax(60px,1fr) 44px 110px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}.frow:last-of-type{border:0}
+.trk{height:10px;background:var(--soft);border-radius:5px;overflow:hidden}.trk i{display:block;height:100%;background:var(--amber);border-radius:5px}
+.frow b{font-variant-numeric:tabular-nums;text-align:right}.frow .tag{justify-self:start}
+details{margin-top:10px}summary{cursor:pointer;color:var(--wine);font-weight:600}
+.its{margin:8px 0;padding-left:18px;display:grid;gap:4px}
+.dgi{display:block;margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+#md>div.wide{max-width:640px}
+.top select{width:auto;margin:0}
+@media(max-width:720px){.frow{grid-template-columns:1fr 44px}.frow .trk{grid-column:1/-1;grid-row:2}.g2{grid-template-columns:1fr}}
+</style>
+
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head><body>
+<nav id="nv"></nav><main id="mn"><div class="card">Carregando…</div></main><div id="md" hidden></div><div id="toast" hidden></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,sendPasswordResetEmail,createUserWithEmailAndPassword} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {getFirestore,collection,doc,onSnapshot,setDoc,deleteDoc,getDoc,query,where,writeBatch} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* Configuração do projeto Firebase (não é senha; pode ficar pública). Nunca coloque senhas neste arquivo. */
+const firebaseConfig = {
+  apiKey: "AIzaSyDh4dk8TF24MhN66AnSa8IWnRffamyiEbc",
+  authDomain: "galo-ze-d2b37.firebaseapp.com",
+  projectId: "galo-ze-d2b37",
+  storageBucket: "galo-ze-d2b37.firebasestorage.app",
+  messagingSenderId: "1037828037673",
+  appId: "1:1037828037673:web:7fd7e98523778c76c61038"
+};
+
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LOGO='<img class="lg" src="data:image/webp;base64,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" alt="Galo Zé">';
+const isoLocal=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const hoje=()=>isoLocal(new Date()),emDias=n=>{const d=new Date();d.setDate(d.getDate()+n);return isoLocal(d)};
+const fd=d=>d?String(d).slice(0,10).split('-').reverse().join('/'):'—';
+const agora=()=>new Date().toISOString(),fdh=s=>s?new Date(s).toLocaleDateString('pt-BR'):'—';
+const nb=v=>v==null||v===''?'—':(typeof v=='number'?v.toFixed(2):String(v)).replace('.',',');
+
+/* ==== LÓGICA PURA (testável) ==== */
+const norm=s=>String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+const faixa=(a,b)=>Array.from({length:b-a+1},(_,i)=>a+i);
+const r2=x=>x==null?null:Math.round(x*100)/100;
+const media=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const INSTR={
+ clima:{n:'Clima organizacional (EBACO)',re:/^0?1\.\s*meu setor/,len:63,fat:[['apoio','Apoio da chefia e da organização',faixa(1,21)],['recomp','Recompensa',faixa(22,34)],['conforto','Conforto físico',faixa(35,47)],['controle','Controle e pressão',faixa(48,56),1],['coesao','Coesão entre colegas',faixa(57,63)]]},
+ just:{n:'Justiça organizacional',re:/^0?1\.\s*sou recompensado/,len:20,fat:[['dist','Distributiva',[1,4,7,8,10,11]],['proc','Procedimental',[3,5,9,13,15]],['inter','Interacional',[2,6,12,14,16,17,18,19,20]]]},
+ lid:{n:'Estilo de liderança (EAEL)',re:/^0?1\.\s*meu lider/,len:19,fat:[['rel','Relacionamento',[1,2,5,6,10,11,13,16,19]],['tar','Tarefa',[4,7,8,12,14,17]],['sit','Situacional',[3,9,15,18]]]}
+};
+function calcDiag(rows){
+ const H=(rows[0]||[]).map(h=>String(h??'').trim()),D=rows.slice(1).filter(r=>r&&r.some(c=>c!==''&&c!=null));
+ const res={n:D.length,fatores:{},itens:{},achados:[],faltando:[],motivacao:null};
+ for(const[key,ins]of Object.entries(INSTR)){
+  const s=H.findIndex(h=>ins.re.test(norm(h)));
+  if(s<0||s+ins.len>H.length){res.faltando.push(ins.n);continue}
+  const vals=i=>D.map(r=>Number(r[s+i-1])).filter(v=>v>=1&&v<=5);
+  res.itens[key]=faixa(1,ins.len).map(i=>({t:H[s+i-1],m:r2(media(vals(i)))}));
+  res.fatores[key]={};ins.fat.forEach(([fk,,its])=>{res.fatores[key][fk]=r2(media(its.flatMap(vals)))});
+  res.achados.push(key)}
+ const mi=H.findIndex(h=>/nivel de motivacao/.test(norm(h)));
+ if(mi>=0){const mv=D.map(r=>r[mi]).filter(c=>c!==''&&c!=null).map(Number).filter(v=>!isNaN(v));res.motivacao=r2(media(mv))}
+ return res}
+const CMAP=[['recebido',/carimbo|data\/hora|timestamp/],['nome',/nome completo|^nome/],['idade',/^idade/],['cidade',/cidade/],['bairro',/bairro/],['tel',/telefone|whatsapp|celular/],['email',/e-?mail/],['periodo',/periodo.*disponibilidade|disponibilidade.*periodo/],['fds',/finais de semana/],['desloc',/deslocamento/],['pretensao',/pretens/],['cv',/curricul/]];
+function hashStr(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)}
+function mapCand(rows){
+ const H=(rows[0]||[]).map(h=>String(h??'').trim()),N=H.map(norm),idx={};
+ CMAP.forEach(([k,re])=>{const i=N.findIndex((h,j)=>re.test(h)&&!Object.values(idx).includes(j));if(i>=0)idx[k]=i});
+ const out=[];
+ rows.slice(1).forEach(r=>{if(!r||!r.some(c=>c!==''&&c!=null))return;
+  const g=k=>{const v=idx[k]!=null?r[idx[k]]:'';return v instanceof Date?v.toISOString():String(v??'').trim()};
+  const c={};CMAP.forEach(([k])=>c[k]=g(k));
+  if(!c.nome)return;
+  c.respostas=H.map((p,i)=>({p,r:r[i] instanceof Date?r[i].toLocaleString('pt-BR'):String(r[i]??'').trim()})).filter(x=>x.p&&x.r);
+  c.id='c'+hashStr(norm(c.email||c.nome)+'|'+c.recebido);out.push(c)});
+ return {itens:out,faltando:['nome','email','tel'].filter(k=>idx[k]==null)}}
+/* ==== FIM LÓGICA PURA ==== */
+
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+
+/* ---------- Estado ---------- */
+const KS=['fr','fu','de','acoes','acoes_sig','diag','cand','at','ac'];
+let S={};KS.forEach(k=>S[k]=[]);
+let ACC={},EDIT=false,MYPAPEL='',MYNOME='',MYID=null,MYEMAIL='',LOADED=false,UNSUB=[],DUNSUB=[],L={};
+let cur='dash',q='',pf=null,fv=null,dv=null,fTipo='',fEtapa='',FORM=null,TMP=null;
+const PR=['Baixa','Média','Alta','Urgente'],DS=['Aberta','Em andamento','Aguardando retorno','Concluída'];
+const MOTIVOS=['Salário / benefícios','Liderança','Ambiente / relacionamento','Jornada / escala','Proposta melhor','Mudança / motivos pessoais','Estudos','Saúde','Desligado pela empresa','Fim de contrato / experiência','Outro'];
+const MODAL=['Individual','Em grupo','Com liderança','Com chefia','Com franqueado(a)'];
+const ETAPAS=['Novo','Triagem','Entrevista','Aprovado','Contratado','Não selecionado','Banco de talentos'];
+const ST_ACAO=['Planejada','Em andamento','Concluída','Cancelada'];
+const TIPOS={
+ rs:{n:'Recrutamento e seleção',f:[['vaga','Vaga / cargo',0,1],['nvagas','Nº de vagas','number'],['etapa','Etapa',['Abertura','Divulgação','Triagem','Entrevistas','Finalizado']],['contratados','Contratados','multi']]},
+ tr:{n:'Treinamento',f:[['tema','Tema',0,1],['carga','Carga horária (horas)','number'],['participantes','Participantes','multi']]},
+ pa:{n:'Palestra',f:[['tema','Tema',0,1],['carga','Duração (horas)','number'],['participantes','Participantes','multi']]},
+ in:{n:'Integração de novos funcionários',f:[['participantes','Novos funcionários','multi'],['conteudo','Conteúdo apresentado','text']]},
+ fb:{n:'Feedback',f:[['fu','Funcionário','@fu',1],['pontos','Pontos trabalhados','text'],['combinados','Combinados / próximos passos','text']]},
+ me:{n:'Mediação de conflitos',f:[['participantes','Pessoas envolvidas','multi'],['encaminhamento','Encaminhamento (visível ao gestor)','text'],['relato','Relato (sigiloso)','text',0,'sig']]},
+ pc:{n:'Pesquisa de clima',f:[['periodo','Período'],['respondentes','Nº de respondentes','number'],['adesao','Adesão (%)','number'],['resultados','Principais resultados','text']]},
+ av:{n:'Avaliação de desempenho',f:[['fu','Funcionário','@fu',1],['ciclo','Ciclo / período'],['resultado','Resultado',['Abaixo do esperado','Atende ao esperado','Supera o esperado']],['plano','Plano de desenvolvimento','text']]},
+ dl:{n:'Entrevista de desligamento',f:[['fu','Funcionário','@fu',1],['dataSaida','Data da saída','date',1],['motivo','Motivo principal',MOTIVOS,1],['relato','Relato da entrevista (sigiloso)','text',0,'sig']]},
+ ou:{n:'Outra ação',f:[['descricao','Descrição','text']]}
+};
+const BASE_TOP=[['tipo','Tipo de ação',Object.entries(TIPOS).map(([k,t])=>[k,t.n]),1],['fr','Franquia','@fr',1],['data','Data','date',1],['status','Status',ST_ACAO]],BASE_BOT=[['titulo','Título (opcional)'],['resp','Responsável'],['obs','Observações gerais','text']];
+const E={
+fr:{t:'Franquias',s:'franquia',f:[['nome','Nome',0,1],['codigo','Código'],['cnpj','CNPJ'],['end','Endereço'],['cidade','Cidade'],['tel','Telefone'],['resp','Responsável / gestor(a)'],['emailResp','E-mail do responsável','email'],['status','Status',['Ativa','Inativa']],['obs','Observações','text']]},
+fu:{t:'Funcionários',s:'funcionário',f:[['nome','Nome completo',0,1],['cargo','Cargo'],['dep','Setor'],['fr','Franquia','@fr',1],['adm','Admissão','date'],['tel','Telefone'],['status','Status',['Ativo','Afastado','Inativo']],['deslig','Data de desligamento','date'],['motivoDeslig','Motivo do desligamento',MOTIVOS]],cols:['nome','cargo','fr','adm','status']},
+de:{t:'Demandas',s:'demanda',f:[['titulo','Título',0,1],['fr','Franquia','@fr',1],['desc','Descrição','text'],['fu','Funcionário (se houver)','@fu'],['resp','Responsável'],['prio','Prioridade',PR],['prazo','Prazo','date'],['status','Status',DS]],cols:['titulo','fr','prio','prazo','status']},
+at:{t:'Atestados',s:'atestado',f:[['fu','Funcionário','@fu',1],['data','Data','date',1],['dias','Dias','number'],['cat','Categoria'],['obs','Observações','text']],cols:['fu','data','dias','cat']},
+ac:{t:'Acompanhamentos',s:'acompanhamento',f:[['tipo','Tipo',['Acompanhamento','Escuta ativa','Outro'],1],['modalidade','Modalidade',MODAL,1],['fr','Franquia','@fr'],['fu','Funcionário','@fu'],['participantes','Participantes (em grupo)','multi'],['pessoa','Pessoa atendida (se não for funcionário cadastrado)'],['data','Data','date',1],['resp','Responsável'],['motivo','Motivo'],['relato','Relato','text'],['orient','Orientações / encaminhamentos','text'],['prox','Próximo acompanhamento','date'],['status','Status',['Pendente','Realizado']],['autor','Registrado por',0,0,'nf'],['sup','Supervisão',0,0,'nf'],['quem','Atendido(s)',0,0,'nf']],cols:['quem','data','tipo','modalidade','status','autor','sup']}
+};
+const VSEC=[['dash','Painel'],['fr','Franquias'],['fu','Funcionários'],['acoes','Ações de RH'],['de','Demandas'],['diag','Diagnósticos'],['cal','Calendário']];
+const MENU=[['dash','Painel'],['fr','Franquias'],['fu','Funcionários'],['acoes','Ações de RH'],['de','Demandas'],['diag','Diagnósticos'],['cand','Candidatos'],['ac','Acompanhamentos'],['at','Atestados'],['cal','Calendário'],['acc','Acessos']];
+const mySecs=()=>EDIT?MENU.map(m=>m[0]):((ACC[MYID]||{}).secs||[]);
+const can=s=>EDIT||mySecs().includes(s);
+const menu=()=>MENU.filter(m=>can(m[0]));
+const nm=(k,id)=>(S[k].find(x=>x.id==id)||{}).nome||'—';
+const acTit=a=>a.titulo||a.tema||a.vaga||(TIPOS[a.tipo]||{}).n||'Ação';
+const tipoN=t=>(TIPOS[t]||{}).n||'—';
+const fieldOf=(k,n)=>E[k].f.find(f=>f[0]==n);
+const toast=t=>{const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,3800)};
+const fuLink=id=>id?(can('fu')&&S.fu.some(u=>u.id==id)?`<button class="link" data-a="prof" data-x="${esc(id)}">${esc(nm('fu',id))}</button>`:esc(nm('fu',id))):'—';
+const SUP=()=>EDIT&&MYPAPEL.toLowerCase()=='supervisora';
+const precisaRev=r=>String(r.registradoPapel||'').toLowerCase()!='supervisora'&&!r.supStatus;
+function supTag(r){if(String(r.registradoPapel||'').toLowerCase()=='supervisora')return '<span class="tag">Registro da supervisora</span>';
+ if(!r.supStatus)return '<span class="tag bad">Aguardando revisão</span>';
+ const ed=r.editadoEm&&r.supEm&&r.editadoEm>r.supEm?' <span class="tag bad">editado após revisão</span>':'';
+ return `<span class="tag ${r.supStatus=='Revisado'?'ok':''}">${esc(r.supStatus)}</span>${ed}`}
+const BAD=['Inativo','Inativa','Afastado','Urgente','Pendente','Cancelada','Não selecionado'],OK=['Ativo','Ativa','Concluída','Realizado','Contratado','Aprovado'];
+const tag=v=>v?`<span class="tag ${BAD.includes(v)?'bad':OK.includes(v)?'ok':''}">${esc(v)}</span>`:'—';
+function quem(r,link=true){const p=[];if(r.fu)p.push(link?fuLink(r.fu):esc(nm('fu',r.fu)));const ps=(r.participantes||[]).filter(x=>x!=r.fu);if(ps.length)p.push(ps.length+' participante(s)');if(r.pessoa)p.push(esc(r.pessoa));return p.join(' · ')||'—'}
+function val(f,r){const[n,,t]=f,v=r[n];
+ if(n=='quem')return quem(r);if(n=='autor')return esc(r.registradoNome||'—');if(n=='sup')return supTag(r);
+ if(t=='@fu')return fuLink(v);if(t=='@fr')return esc(nm('fr',v));if(t=='date')return fd(v);
+ if(t=='multi')return Array.isArray(v)&&v.length?v.map(fuLink).join(', '):'—';
+ if(Array.isArray(t)&&Array.isArray(t[0]))return esc((t.find(x=>x[0]==v)||[])[1]||'—');
+ if(['status','prio','etapa'].includes(n))return tag(v);
+ return esc(v)||'—'}
+
+/* ---------- Login ---------- */
+function telaLogin(msg){
+ document.body.classList.add('login');$('#nv').innerHTML='';
+ $('#mn').innerHTML=`<div class="lbox">${LOGO}<h1>Galo Zé</h1><div class="sub">Gestão de pessoas</div>
+ <form id="lf" class="card"><label for="l_email">E-mail</label><input id="l_email" type="email" autocomplete="username" required>
+ <label for="l_senha">Senha</label><input id="l_senha" type="password" autocomplete="current-password" required>
+ <div id="lerr" class="err" ${msg?'':'hidden'}>${esc(msg||'')}</div>
+ <button class="btn" type="submit" id="lbtn" style="width:100%">Entrar</button>
+ <button class="btn g" type="button" data-a="reset" style="width:100%;margin-top:8px">Esqueci minha senha</button></form></div>`;
+ $('#lf').addEventListener('submit',async ev=>{ev.preventDefault();const b=$('#lbtn');b.disabled=true;b.textContent='Entrando…';
+  try{await signInWithEmailAndPassword(auth,$('#l_email').value.trim(),$('#l_senha').value)}
+  catch(e){b.disabled=false;b.textContent='Entrar';const er=$('#lerr');er.textContent=['auth/invalid-credential','auth/wrong-password','auth/user-not-found','auth/invalid-email'].includes(e.code)?'E-mail ou senha incorretos.':e.code=='auth/too-many-requests'?'Muitas tentativas. Aguarde alguns minutos e tente de novo.':'Não foi possível entrar. Verifique a conexão.';er.hidden=false}});
+ $('#l_email').focus()}
+async function esqueci(){const em=($('#l_email')||{}).value?.trim();const er=$('#lerr');
+ if(!em){er.textContent='Digite seu e-mail acima e clique de novo em "Esqueci minha senha".';er.hidden=false;return}
+ try{await sendPasswordResetEmail(auth,em)}catch(e){}
+ er.textContent='Se este e-mail tiver acesso, enviamos um link para criar uma nova senha. Confira também o spam.';er.hidden=false}
+
+/* ---------- Dados ---------- */
+let raf=0;function agendar(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;if($('#md').hidden)render()})}
+function setPart(k,key,arr){(L[k]=L[k]||{})[key]=arr;const m=new Map();Object.values(L[k]).forEach(a=>a.forEach(x=>m.set(x.id,x)));S[k]=[...m.values()];agendar()}
+function sub(k,ref,key){DUNSUB.push(onSnapshot(ref,s=>setPart(k,key,s.docs?s.docs.map(d=>({...d.data(),id:d.id})):(s.exists()?[{...s.data(),id:s.id}]:[])),e=>console.warn(k,key,e.code)))}
+function assinarDados(){DUNSUB.forEach(u=>{try{u()}catch(e){}});DUNSUB=[];L={};KS.forEach(k=>S[k]=[]);
+ if(EDIT){KS.forEach(k=>sub(k,collection(db,k),'all'));return}
+ const a=ACC[MYID]||{},secs=a.secs||[],frs=a.frs||[],todas=!!a.todas;
+ if(!secs.length||(!todas&&!frs.length))return;
+ if(todas)sub('fr',collection(db,'fr'),'all');else frs.forEach(f=>sub('fr',doc(db,'fr',f),f));
+ ['fu','de','acoes','diag'].filter(k=>secs.includes(k)).forEach(k=>{
+  const ex=k=='diag'?[where('visivel','==',true)]:[];
+  if(todas)sub(k,ex.length?query(collection(db,k),...ex):collection(db,k),'all');
+  else frs.forEach(f=>sub(k,query(collection(db,k),where('fr','==',f),...ex),f))})}
+function pararTudo(){[...UNSUB,...DUNSUB].forEach(u=>{try{u()}catch(e){}});UNSUB=[];DUNSUB=[];L={};KS.forEach(k=>S[k]=[]);ACC={}}
+onAuthStateChanged(auth,async u=>{
+ pararTudo();LOADED=false;
+ if(!u){MYID=null;EDIT=false;telaLogin();return}
+ document.body.classList.remove('login');
+ MYID=u.uid;MYEMAIL=u.email||'';$('#mn').innerHTML='<div class="card">Carregando…</div>';
+ try{const a=await getDoc(doc(db,'admins',u.uid));EDIT=a.exists();if(EDIT){MYPAPEL=a.data().papel||'';MYNOME=a.data().nome||''}}catch(e){EDIT=false}
+ if(EDIT){UNSUB.push(onSnapshot(collection(db,'acessos'),s=>{ACC={};s.docs.forEach(d=>ACC[d.id]=d.data());if($('#md').hidden&&cur!='acc')render()}));assinarDados();LOADED=true;render()}
+ else{let prev=null;
+  UNSUB.push(onSnapshot(doc(db,'acessos',u.uid),d=>{ACC={};if(d.exists())ACC[u.uid]=d.data();MYNOME=(ACC[u.uid]||{}).nome||'';
+   const a=ACC[u.uid]||{},k=JSON.stringify([a.secs,a.frs,a.todas]);if(k!==prev){prev=k;assinarDados()}LOADED=true;render()},()=>{LOADED=true;render()}))}});
+
+/* ---------- Estrutura ---------- */
+function render(){
+ if(!LOADED)return;
+ const ms=menu();if(!ms.some(m=>m[0]==cur)&&ms.length)cur=ms[0][0];
+ const papel=EDIT?(SUP()?'Supervisora':MYPAPEL.toLowerCase()=='estudante'?'Estudante de psicologia':'Equipe de psicologia')+' (edição)':'Visualização';
+ $('#nv').innerHTML=LOGO+ms.map(m=>`<button class="${m[0]==cur&&!pf&&!fv&&!dv?'on':''}" data-a="go" data-x="${m[0]}">${m[1]}</button>`).join('')+
+  `<div class="who"><b>${esc(MYNOME||MYEMAIL)}</b>${papel}<br><button class="link" data-a="sair">Sair</button></div>`;
+ if(!ms.length){$('#mn').innerHTML=`<h1>Galo Zé</h1><div class="card"><h2>Acesso aguardando liberação</h2><p>Você entrou como <b>${esc(MYEMAIL)}</b>, mas nenhuma área foi liberada para você ainda. Peça à equipe de psicologia para liberar seu acesso.</p><button class="btn" data-a="sair">Sair</button></div>`;return}
+ const T={dash,fr:frList,fu:()=>list('fu'),acoes:acoesList,de:()=>list('de'),diag:diagList,cand:candList,ac:()=>list('ac'),at:()=>list('at'),cal,acc:accH};
+ $('#mn').innerHTML=pf&&can('fu')?profH():dv?diagH():fv?frH():(T[cur]||dash)()}
+const addBtn=(k,label,pre)=>EDIT?`<button class="btn" data-a="novo" data-x="${k}" data-y="${esc(pre||'')}">${label}</button>`:'';
+const rowBtns=(k,id,extra)=>EDIT?`<td class="acts">${extra||''}<button class="btn g" data-a="edit" data-x="${k}" data-y="${esc(id)}">Editar</button><button class="btn g" data-a="del" data-x="${k}" data-y="${esc(id)}">Excluir</button></td>`:(extra?`<td class="acts">${extra}</td>`:'');
+const vazio=t=>`<div class="sub" style="margin:0">${t||'Nenhum registro.'}</div>`;
+
+/* Franquias */
+function frList(){const r=S.fr.filter(f=>!q||norm((f.nome||'')+(f.codigo||'')+(f.cidade||'')).includes(norm(q)));
+ return `<h1>Franquias</h1><div class="sub">${S.fr.length} unidade(s)</div><div class="top"><input id="q" placeholder="Pesquisar franquia…" value="${esc(q)}">${addBtn('fr','+ Adicionar franquia')}</div>
+ <div class="grid">${r.map(f=>`<div class="card fcard"><button class="open" data-a="frp" data-x="${esc(f.id)}"><b>${esc(f.nome)}</b><div class="kl">${esc([f.codigo,f.cidade].filter(Boolean).join(' · ')||'sem código')}${can('fu')?' · '+S.fu.filter(u=>u.fr==f.id&&u.status!='Inativo').length+' ativo(s)':''}</div></button>${EDIT?`<button class="btn g sm" data-a="edit" data-x="fr" data-y="${esc(f.id)}">Editar dados</button>`:''}</div>`).join('')||vazio('Nenhuma franquia encontrada.')}</div>`}
+function frH(){const f=S.fr.find(x=>x.id==fv);if(!f){fv=null;return frList()}
+ const em=S.fu.filter(u=>u.fr==fv),dm=S.de.filter(d=>d.fr==fv),ac=S.acoes.filter(a=>a.fr==fv),dg=S.diag.filter(g=>g.fr==fv);
+ const info=[['Código',f.codigo],['CNPJ',f.cnpj],['Endereço',f.end],['Cidade',f.cidade],['Telefone',f.tel],['Responsável',f.resp],['E-mail do responsável',f.emailResp]].filter(x=>x[1]);
+ return `<button class="btn g" data-a="back">← Franquias</button><h1>${esc(f.nome)} ${tag(f.status)}</h1>
+ <div class="top">${EDIT?`<button class="btn" data-a="edit" data-x="fr" data-y="${esc(f.id)}">Editar dados da franquia</button><button class="btn g" data-a="del" data-x="fr" data-y="${esc(f.id)}">Excluir</button>`:''}</div>
+ ${info.length||f.obs?`<div class="card"><div class="info">${info.map(x=>`<div><small>${x[0]}</small>${esc(x[1])}</div>`).join('')}</div>${f.obs?`<p style="margin:10px 0 0">${esc(f.obs)}</p>`:''}</div>`:''}
+ <div class="grid">${can('fu')?`<div class="card"><div class="k">${em.filter(u=>u.status=='Ativo').length}</div><div class="kl">Funcionários ativos</div></div>`:''}${can('acoes')?`<div class="card"><div class="k">${ac.filter(a=>a.status=='Concluída').length}</div><div class="kl">Ações concluídas</div></div>`:''}${can('de')?`<div class="card"><div class="k">${dm.filter(d=>d.status!='Concluída').length}</div><div class="kl">Demandas abertas</div></div>`:''}</div>
+ ${can('fu')?`<div class="card tw"><h2>Funcionários ${addBtn('fu','+ Adicionar funcionário','fr:'+fv)}</h2>${tbl('fu',em)}</div>`:''}
+ ${can('acoes')?`<div class="card tw"><h2>Ações de RH ${addBtn('acoes','+ Nova ação','fr:'+fv)}</h2>${acoesTbl(ac)}</div>`:''}
+ ${can('de')?`<div class="card tw"><h2>Demandas ${addBtn('de','+ Nova demanda','fr:'+fv)}</h2>${tbl('de',dm)}</div>`:''}
+ ${can('diag')?`<div class="card"><h2>Diagnósticos</h2>${dg.length?dg.map(diagItem).join(''):vazio()}</div>`:''}`}
+
+/* Funcionário */
+function profH(){const id=pf,u=S.fu.find(x=>x.id==id);if(!u){pf=null;return frList()}
+ const acs=S.acoes.filter(a=>a.fu==id||(Array.isArray(a.participantes)&&a.participantes.includes(id))||(Array.isArray(a.contratados)&&a.contratados.includes(id)));
+ const ev=[];
+ if(u.adm)ev.push([u.adm,'Admissão']);if(u.deslig)ev.push([u.deslig,'Desligamento'+(u.motivoDeslig?' — '+esc(u.motivoDeslig):'')]);
+ acs.forEach(a=>ev.push([a.data,`${esc(tipoN(a.tipo))}: ${esc(acTit(a))} (${esc(a.status||'—')})`]));
+ S.at.filter(x=>x.fu==id).forEach(x=>ev.push([x.data,`Atestado — ${esc(x.dias||'?')} dia(s)`]));
+ S.ac.filter(x=>x.fu==id||(x.participantes||[]).includes(id)).forEach(x=>{ev.push([x.data,`${esc(x.tipo||'Acompanhamento')}${x.modalidade?' · '+esc(x.modalidade.toLowerCase()):''} (${esc(x.status||'—')})`]);x.prox&&ev.push([x.prox,'Próximo acompanhamento agendado'])});
+ if(can('de'))S.de.filter(x=>x.fu==id).forEach(x=>ev.push([x.criado,`Demanda: ${esc(x.titulo)} (${esc(x.status||'—')})`]));
+ ev.sort((a,b)=>(b[0]||'').localeCompare(a[0]||''));
+ const sec=(k,t,b)=>`<div class="card tw"><h2>${t} ${addBtn(k,b,'fu:'+id)}</h2>${tbl(k,S[k].filter(x=>x.fu==id||(k=='ac'&&(x.participantes||[]).includes(id))))}</div>`;
+ return `<button class="btn g" data-a="back">← Voltar</button><h1>${esc(u.nome)} ${tag(u.status)}</h1>
+ <div class="sub">${[u.cargo,u.dep,nm('fr',u.fr)].filter(x=>x&&x!='—').map(esc).join(' · ')} · Admissão ${fd(u.adm)}${u.deslig?' · Desligamento '+fd(u.deslig):''} ${EDIT?`<button class="btn g" data-a="edit" data-x="fu" data-y="${esc(u.id)}">Editar</button>`:''}</div>
+ ${can('acoes')?`<div class="card tw"><h2>Ações de RH</h2>${acoesTbl(acs)}</div>`:''}
+ ${EDIT?sec('ac','Acompanhamentos e escutas','+ Novo')+sec('at','Atestados','+ Novo atestado'):''}${can('de')?sec('de','Demandas','+ Nova demanda'):''}
+ <div class="card"><h2>Linha do tempo</h2><div class="tl">${ev.length?ev.map(e=>`<div><small>${fd(e[0])}</small><br>${e[1]}</div>`).join(''):'<div class="sub">Sem registros ainda.</div>'}</div></div>`}
+
+/* Painel */
+function dash(){
+ const t=hoje(),soon=emDias(3),soon7=emDias(7);
+ const ativos=S.fu.filter(x=>x.status=='Ativo').length,Af=S.fu.filter(x=>x.status=='Afastado').length,In=S.fu.filter(x=>x.status=='Inativo').length;
+ const od=S.de.filter(d=>d.prazo&&d.prazo<t&&d.status!='Concluída'),op=S.de.filter(d=>d.status!='Concluída'),pend=S.ac.filter(a=>a.status=='Pendente');
+ const prox=S.acoes.filter(a=>a.data&&a.data>=t&&a.data<=soon7&&['Planejada','Em andamento'].includes(a.status));
+ const al=[];
+ if(can('de'))od.forEach(d=>al.push(`Demanda atrasada: <b>${esc(d.titulo)}</b> — ${esc(nm('fr',d.fr))} (prazo ${fd(d.prazo)})`));
+ if(can('acoes'))prox.forEach(a=>al.push(`Ação nos próximos dias: <b>${esc(acTit(a))}</b> — ${esc(nm('fr',a.fr))} em ${fd(a.data)}`));
+ if(SUP())S.ac.filter(precisaRev).forEach(a=>al.push(`Revisão pendente: ${esc((a.tipo||'acompanhamento').toLowerCase())} de <b>${quem(a,false)}</b> (${fd(a.data)}), registrado por ${esc(a.registradoNome||'—')}`));
+ if(EDIT&&!SUP())S.ac.filter(a=>a.supStatus=='Revisado com observações'&&a.registradoPor==MYID&&!(a.editadoEm>a.supEm)).forEach(a=>al.push(`A supervisora deixou observações no registro de <b>${quem(a,false)}</b> (${fd(a.data)})`));
+ if(EDIT)pend.filter(a=>a.prox&&a.prox<=soon).forEach(a=>al.push(`Acompanhamento de <b>${quem(a,false)}</b> em ${fd(a.prox)}`));
+ const nNovos=S.cand.filter(c=>(c.etapa||'Novo')=='Novo').length;if(EDIT&&nNovos)al.push(`<b>${nNovos}</b> candidato(s) novo(s) para triagem`);
+ const mx=Math.max(1,...S.fr.map(f=>S.fu.filter(u=>u.fr==f.id&&u.status!='Inativo').length));
+ const K=(l,v,r)=>`<div class="card"><div class="k ${r?'r':''}">${v}</div><div class="kl">${l}</div></div>`;
+ return `<h1>Galo Zé — Gestão de pessoas</h1><div class="sub">Painel · ${fd(t)}</div>
+ <div class="grid">${can('fr')?K('Franquias',S.fr.length):''}${can('fu')?K('Funcionários ativos',ativos)+K('Afastados',Af)+K('Desligados',In):''}${can('acoes')?K('Ações planejadas / em andamento',S.acoes.filter(a=>['Planejada','Em andamento'].includes(a.status)).length):''}${can('de')?K('Demandas abertas',op.length)+K('Demandas atrasadas',od.length,1):''}${EDIT?K('Aguardando revisão da supervisão',S.ac.filter(precisaRev).length,1)+K('Candidatos novos',nNovos):''}</div>
+ <div class="card"><h2>Alertas</h2>${al.length?al.map(a=>`<div class="al">${a}</div>`).join(''):vazio('Nenhum alerta no momento.')}</div>
+ ${can('fu')&&S.fr.length?`<div class="card"><h2>Funcionários ativos por franquia</h2>${S.fr.map(f=>{const n=S.fu.filter(u=>u.fr==f.id&&u.status!='Inativo').length;return `<div class="bar"><span>${esc(f.nome)}</span><i style="width:${n/mx*55+1}%"></i>${n}</div>`}).join('')}</div>`:''}`}
+
+/* Listas genéricas */
+function list(k){const e=E[k],ql=norm(q);
+ const rows=S[k].filter(r=>!q||norm(JSON.stringify(r)).includes(ql)||(r.fu&&norm(nm('fu',r.fu)).includes(ql))||(r.fr&&norm(nm('fr',r.fr)).includes(ql)));
+ const nota=k=='ac'||k=='at'?' · visível apenas para a equipe de psicologia':'';
+ return `<h1>${e.t}</h1><div class="sub">${S[k].length} registro(s)${nota}</div><div class="top"><input id="q" placeholder="Pesquisar…" value="${esc(q)}">${addBtn(k,'+ Adicionar '+e.s)}</div><div class="card tw">${tbl(k,rows)}</div>`}
+function tbl(k,rows){const e=E[k];if(!rows.length)return vazio();
+ return `<table><tr>${e.cols.map(c=>`<th>${fieldOf(k,c)[1]}</th>`).join('')}${EDIT?'<th></th>':''}</tr>${rows.map(r=>`<tr>${e.cols.map(c=>{let v=val(fieldOf(k,c),r);if(k=='fu'&&c=='nome')v=`<button class="link" data-a="prof" data-x="${esc(r.id)}">${esc(r.nome)}</button>`;return `<td>${v}</td>`}).join('')}${k=='ac'?(EDIT?`<td class="acts"><button class="btn g" data-a="verAc" data-x="${esc(r.id)}">${SUP()&&precisaRev(r)?'Revisar':'Ver'}</button><button class="btn g" data-a="edit" data-x="ac" data-y="${esc(r.id)}">Editar</button>${SUP()?`<button class="btn g" data-a="del" data-x="ac" data-y="${esc(r.id)}">Excluir</button>`:''}</td>`:''):rowBtns(k,r.id)}</tr>`).join('')}</table>`}
+
+/* Ações de RH */
+function acoesList(){const ql=norm(q);
+ const rows=S.acoes.filter(a=>(!fTipo||a.tipo==fTipo)&&(!q||norm(acTit(a)+' '+nm('fr',a.fr)+' '+(a.tema||'')+' '+(a.vaga||'')).includes(ql))).sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+ return `<h1>Ações de RH</h1><div class="sub">${S.acoes.length} ação(ões) registrada(s)</div>
+ <div class="top"><input id="q" placeholder="Pesquisar…" value="${esc(q)}"><select id="ft" aria-label="Filtrar por tipo"><option value="">Todos os tipos</option>${Object.entries(TIPOS).map(([k,t])=>`<option value="${k}" ${k==fTipo?'selected':''}>${t.n}</option>`).join('')}</select>${addBtn('acoes','+ Nova ação')}</div>
+ <div class="card tw">${acoesTbl(rows)}</div>`}
+function acoesTbl(rows){if(!rows.length)return vazio();
+ return `<table><tr><th>Data</th><th>Tipo</th><th>Título</th><th>Franquia</th><th>Pessoas</th><th>Status</th><th></th></tr>${rows.map(a=>{const p=(a.participantes||[]).length||(a.fu?1:0)||(a.contratados||[]).length;
+  return `<tr><td>${fd(a.data)}</td><td>${esc(tipoN(a.tipo))}</td><td><button class="link" data-a="verAcao" data-x="${esc(a.id)}">${esc(acTit(a))}</button></td><td>${esc(nm('fr',a.fr))}</td><td>${p||'—'}</td><td>${tag(a.status)}</td>${rowBtns('acoes',a.id)}</tr>`}).join('')}</table>`}
+function verAcao(id){const a=S.acoes.find(x=>x.id==id);if(!a)return;const sg=S.acoes_sig.find(x=>x.id==id)||{},r={...a,...sg};
+ const fs=[...BASE_TOP.slice(1),...((TIPOS[a.tipo]||{}).f||[]),...BASE_BOT].filter(f=>f[0]!='titulo'&&(f[4]!='sig'||EDIT));
+ $('#md').innerHTML=`<div role="dialog" aria-modal="true"><h2>${esc(acTit(a))}</h2><div class="sub">${esc(tipoN(a.tipo))}</div>
+ ${fs.map(f=>{const v=val(f,r);return v&&v!='—'?`<div class="dl"><small>${esc(f[1])}</small><div>${f[2]=='text'?esc(r[f[0]]).replace(/\n/g,'<br>'):v}</div></div>`:''}).join('')}
+ <div style="display:flex;gap:8px">${EDIT?`<button class="btn" data-a="edit" data-x="acoes" data-y="${esc(id)}">Editar</button>`:''}<button class="btn g" data-a="cl">Fechar</button></div></div>`;$('#md').hidden=false}
+
+/* Diagnósticos */
+function diagItem(g){return `<button class="card fc dgi" data-a="dgp" data-x="${esc(g.id)}"><b>${esc(g.titulo||'Diagnóstico')}</b><div class="kl">${esc(nm('fr',g.fr))} · ${fd(g.data)} · ${g.n} resposta(s)${EDIT?` · ${g.visivel?'<span class="tag ok">visível para gestores</span>':'<span class="tag">só equipe (menos de 5 respostas)</span>'}`:''}</div></button>`}
+function diagList(){const rows=S.diag.slice().sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+ return `<h1>Diagnósticos</h1><div class="sub">Resultados agregados por franquia. As respostas individuais nunca ficam no sistema.</div><div class="top">${EDIT?'<button class="btn" data-a="impDiag">+ Importar respostas do Forms</button>':''}</div>${rows.length?rows.map(diagItem).join(''):vazio('Nenhum diagnóstico importado ainda.')}`}
+function nivel(m,inv){if(m==null)return '';if(inv)return m>=4?'<span class="tag bad">pressão alta</span>':m<=2.9?'<span class="tag ok">pressão baixa</span>':'<span class="tag">intermediário</span>';
+ return m>=4?'<span class="tag ok">favorável</span>':m<=2.9?'<span class="tag bad">desfavorável</span>':'<span class="tag">intermediário</span>'}
+function diagH(){const g=S.diag.find(x=>x.id==dv);if(!g){dv=null;return diagList()}
+ const blocos=Object.entries(INSTR).filter(([k])=>g.fatores&&g.fatores[k]).map(([k,ins])=>{
+  const linhas=ins.fat.map(([fk,fn,,inv])=>{const m=g.fatores[k][fk];return `<div class="frow"><span>${fn}${inv?' <small class="kl">(quanto maior, pior)</small>':''}</span><div class="trk"><i style="width:${m?m/5*100:0}%"></i></div><b>${nb(m)}</b>${k=='clima'?nivel(m,inv):'<span></span>'}</div>`}).join('');
+  let destaque='';
+  if(g.itens&&g.itens[k]){const it=g.itens[k].map((x,i)=>({...x,i:i+1}));
+   const ctl=k=='clima'?new Set(ins.fat.find(f=>f[3])[2]):new Set();
+   const baixos=it.filter(x=>!ctl.has(x.i)&&x.m!=null).sort((a,b)=>a.m-b.m).slice(0,5);
+   const altos=it.filter(x=>ctl.has(x.i)&&x.m!=null).sort((a,b)=>b.m-a.m).slice(0,3);
+   destaque=`<details><summary>Itens que merecem atenção</summary><ul class="its">${baixos.map(x=>`<li><b>${nb(x.m)}</b> · ${esc(x.t)}</li>`).join('')}${altos.length?`</ul><div class="kl">Controle e pressão (maiores médias):</div><ul class="its">${altos.map(x=>`<li><b>${nb(x.m)}</b> · ${esc(x.t)}</li>`).join('')}`:''}</ul></details>`}
+  return `<div class="card"><h2>${ins.n}</h2>${linhas}${destaque}</div>`}).join('');
+ const T=(l,v)=>`<div class="dl"><small>${l}</small><div>${v?esc(v).replace(/\n/g,'<br>'):'<span class="kl">Não preenchido.</span>'}</div></div>`;
+ return `<button class="btn g" data-a="back">← Voltar</button><h1>${esc(g.titulo||'Diagnóstico')}</h1>
+ <div class="sub">${esc(nm('fr',g.fr))} · aplicado em ${fd(g.data)} · ${g.n} resposta(s) · escala de 1 a 5</div>
+ <div class="grid"><div class="card"><div class="k">${g.n}</div><div class="kl">Respondentes</div></div>${g.motivacao!=null?`<div class="card"><div class="k">${nb(g.motivacao)}</div><div class="kl">Motivação média (0 a 10)</div></div>`:''}</div>
+ ${blocos}<p class="kl">Faixas da EBACO usadas aqui: média ≥ 4 favorável, ≤ 2,9 desfavorável (em controle e pressão, o inverso). Confirme no manual do instrumento. Justiça organizacional: dimensões agrupadas pelo conteúdo dos itens.</p>
+ <div class="card"><h2>Análise e plano de ação ${EDIT?`<button class="btn g" data-a="editDiag" data-x="${esc(g.id)}">Editar</button>`:''}</h2>${T('Análise da equipe',g.analise)}${T('Síntese das sugestões dos funcionários',g.sintese)}${T('Plano de ação',g.plano)}</div>
+ ${EDIT?`<button class="btn g" data-a="del" data-x="diag" data-y="${esc(g.id)}">Excluir diagnóstico</button>`:''}`}
+async function lerPlanilha(file){if(typeof XLSX=='undefined')throw new Error('Leitor de planilhas não carregou. Recarregue a página.');
+ const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:true});return XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:''})}
+const frOpts=sel=>`<option value="">—</option>${S.fr.map(f=>`<option value="${esc(f.id)}" ${f.id==sel?'selected':''}>${esc(f.nome)}</option>`).join('')}`;
+function impDiag(){TMP=null;
+ $('#md').innerHTML=`<div role="dialog" aria-modal="true"><h2>Importar diagnóstico</h2><p class="kl">Use a planilha de respostas do Google Forms (.xlsx ou .csv). O arquivo é lido no seu computador: o sistema guarda só as médias por fator, nunca as respostas individuais, os dados demográficos ou as sugestões escritas.</p>
+ <form id="dif"><label for="d_fr">Franquia <span class="req">*</span></label><select id="d_fr">${frOpts(fv)}</select>
+ <label for="d_tit">Título</label><input id="d_tit" value="Diagnóstico organizacional">
+ <label for="d_data">Data de aplicação</label><input id="d_data" type="date" value="${hoje()}">
+ <label for="d_arq">Planilha de respostas <span class="req">*</span></label><input id="d_arq" type="file" accept=".xlsx,.xls,.csv">
+ <div id="dprev"></div><div id="derr" class="err" hidden></div>
+ <div style="display:flex;gap:8px"><button class="btn" type="submit" id="dsv" disabled>Salvar diagnóstico</button><button class="btn g" type="button" data-a="cl">Cancelar</button></div></form></div>`;$('#md').hidden=false;
+ $('#d_arq').addEventListener('change',async e=>{const f=e.target.files[0],er=$('#derr');er.hidden=true;$('#dsv').disabled=true;$('#dprev').innerHTML='';if(!f)return;
+  try{const rows=await lerPlanilha(f);const r=calcDiag(rows);
+   if(!r.achados.length)throw new Error('Não encontrei as perguntas das escalas nesta planilha. Confira se é a planilha de respostas do diagnóstico.');
+   TMP=r;const ds=r.achados.map(k=>`<li>${INSTR[k].n}: ${INSTR[k].fat.map(x=>x[1]+' '+nb(r.fatores[k][x[0]])).join(' · ')}</li>`).join('');
+   $('#dprev').innerHTML=`<div class="note"><b>${r.n} resposta(s) encontradas.</b><ul class="its">${ds}${r.motivacao!=null?`<li>Motivação média: ${nb(r.motivacao)}</li>`:''}</ul>${r.faltando.length?`Não encontrado: ${r.faltando.join(', ')}.<br>`:''}${r.n<5?'<b>Com menos de 5 respostas, o resultado fica visível só para a equipe</b>, para proteger o anonimato.':'O resultado ficará visível para os gestores com acesso a Diagnósticos desta franquia.'}</div>`;$('#dsv').disabled=false}
+  catch(x){er.textContent=x.message||'Não foi possível ler a planilha.';er.hidden=false}});
+ $('#dif').addEventListener('submit',async e=>{e.preventDefault();const er=$('#derr'),fr=$('#d_fr').value;
+  if(!fr||!TMP){er.textContent='Escolha a franquia e a planilha.';er.hidden=false;return}
+  const b=$('#dsv');b.disabled=true;b.textContent='Salvando…';
+  try{await setDoc(doc(collection(db,'diag')),{fr,titulo:$('#d_tit').value.trim()||'Diagnóstico organizacional',data:$('#d_data').value||hoje(),n:TMP.n,motivacao:TMP.motivacao,fatores:TMP.fatores,itens:TMP.itens,analise:'',sintese:'',plano:'',visivel:TMP.n>=5,criado:hoje()});fechar();toast('Diagnóstico importado.')}
+  catch(x){b.disabled=false;b.textContent='Salvar diagnóstico';er.textContent='Não foi possível salvar ('+(x.code||'erro')+').';er.hidden=false}})}
+function editDiag(id){const g=S.diag.find(x=>x.id==id);if(!g)return;
+ $('#md').innerHTML=`<div role="dialog" aria-modal="true"><h2>Análise e plano de ação</h2><form id="edf">
+ <label for="g_tit">Título</label><input id="g_tit" value="${esc(g.titulo)}"><label for="g_data">Data de aplicação</label><input id="g_data" type="date" value="${esc(g.data)}">
+ <label for="g_an">Análise da equipe</label><textarea id="g_an" rows="5">${esc(g.analise)}</textarea>
+ <label for="g_si">Síntese das sugestões dos funcionários <small class="kl">(sem frases que identifiquem quem escreveu)</small></label><textarea id="g_si" rows="4">${esc(g.sintese)}</textarea>
+ <label for="g_pl">Plano de ação</label><textarea id="g_pl" rows="5">${esc(g.plano)}</textarea>
+ <div id="gerr" class="err" hidden></div><div style="display:flex;gap:8px"><button class="btn" type="submit">Salvar</button><button class="btn g" type="button" data-a="cl">Cancelar</button></div></form></div>`;$('#md').hidden=false;
+ $('#edf').addEventListener('submit',async e=>{e.preventDefault();const o={...g,titulo:$('#g_tit').value.trim(),data:$('#g_data').value,analise:$('#g_an').value.trim(),sintese:$('#g_si').value.trim(),plano:$('#g_pl').value.trim()};delete o.id;
+  try{await setDoc(doc(db,'diag',id),o);fechar();toast('Salvo.')}catch(x){const er=$('#gerr');er.textContent='Não foi possível salvar.';er.hidden=false}})}
+
+/* Candidatos */
+function candList(){const ql=norm(q);
+ const rows=S.cand.filter(c=>(!fEtapa||(c.etapa||'Novo')==fEtapa)&&(!q||norm([c.nome,c.cidade,c.bairro,c.email].join(' ')).includes(ql))).sort((a,b)=>String(b.recebido||'').localeCompare(String(a.recebido||'')));
+ return `<h1>Candidatos</h1><div class="sub">${S.cand.length} candidato(s) · visível apenas para a equipe de psicologia</div>
+ <div class="top"><input id="q" placeholder="Pesquisar por nome, cidade, bairro…" value="${esc(q)}"><select id="fe" aria-label="Filtrar por etapa"><option value="">Todas as etapas</option>${ETAPAS.map(x=>`<option ${x==fEtapa?'selected':''}>${x}</option>`).join('')}</select><button class="btn" data-a="impCand">+ Importar do Forms</button></div>
+ <div class="card tw">${rows.length?`<table><tr><th>Nome</th><th>Cidade / bairro</th><th>Período</th><th>Pretensão</th><th>Etapa</th><th>Recebido</th><th></th></tr>${rows.map(c=>`<tr><td><button class="link" data-a="verCand" data-x="${esc(c.id)}">${esc(c.nome)}</button></td><td>${esc([c.cidade,c.bairro].filter(Boolean).join(' / '))||'—'}</td><td>${esc(c.periodo)||'—'}</td><td>${esc(c.pretensao)||'—'}</td><td>${tag(c.etapa||'Novo')}</td><td>${fdh(c.recebido)}</td><td class="acts"><button class="btn g" data-a="verCand" data-x="${esc(c.id)}">Abrir</button></td></tr>`).join('')}</table>`:vazio('Nenhum candidato. Importe a planilha de respostas do formulário "Trabalhe conosco".')}</div>
+ <p class="kl">Dados pessoais de candidatos: mantenha apenas enquanto houver processo seletivo ou consentimento para o banco de talentos, e exclua os demais periodicamente.</p>`}
+function impCand(){TMP=null;
+ $('#md').innerHTML=`<div role="dialog" aria-modal="true"><h2>Importar candidatos</h2><p class="kl">No Google Forms, abra <b>Respostas → Ver no Planilhas</b>, depois <b>Arquivo → Fazer download → Microsoft Excel (.xlsx)</b>. Candidatos já importados são ignorados, então pode importar a planilha inteira sempre.</p>
+ <form id="cif"><label for="c_arq">Planilha de respostas</label><input id="c_arq" type="file" accept=".xlsx,.xls,.csv"><div id="cprev"></div><div id="cerr" class="err" hidden></div>
+ <div style="display:flex;gap:8px"><button class="btn" type="submit" id="csv" disabled>Importar</button><button class="btn g" type="button" data-a="cl">Cancelar</button></div></form></div>`;$('#md').hidden=false;
+ $('#c_arq').addEventListener('change',async e=>{const f=e.target.files[0],er=$('#cerr');er.hidden=true;$('#csv').disabled=true;$('#cprev').innerHTML='';if(!f)return;
+  try{const r=mapCand(await lerPlanilha(f));if(!r.itens.length)throw new Error('Não encontrei candidatos nesta planilha. Confira se a primeira linha tem as perguntas do formulário.');
+   const novos=r.itens.filter(c=>!S.cand.some(x=>x.id==c.id));TMP=novos;
+   $('#cprev').innerHTML=`<div class="note"><b>${novos.length} candidato(s) novo(s)</b>${r.itens.length-novos.length?` · ${r.itens.length-novos.length} já importado(s)`:''}${r.faltando.length?`<br>Colunas não encontradas: ${r.faltando.join(', ')}.`:''}</div>`;$('#csv').disabled=!novos.length}
+  catch(x){er.textContent=x.message||'Não foi possível ler a planilha.';er.hidden=false}});
+ $('#cif').addEventListener('submit',async e=>{e.preventDefault();if(!TMP||!TMP.length)return;const b=$('#csv');b.disabled=true;b.textContent='Importando…';
+  try{for(let i=0;i<TMP.length;i+=400){const bt=writeBatch(db);TMP.slice(i,i+400).forEach(c=>{const{id,...o}=c;bt.set(doc(db,'cand',id),{...o,etapa:'Novo',fr:'',vaga:'',notas:'',importado:hoje()})});await bt.commit()}
+   fechar();toast(TMP.length+' candidato(s) importado(s).')}
+  catch(x){b.disabled=false;b.textContent='Importar';const er=$('#cerr');er.textContent='Não foi possível importar ('+(x.code||'erro')+').';er.hidden=false}})}
+function verCand(id){const c=S.cand.find(x=>x.id==id);if(!c)return;
+ const rs=S.acoes.filter(a=>a.tipo=='rs'&&a.status!='Cancelada');
+ const cv=/^https?:\/\//.test(c.cv||'')?c.cv.split(/[\s,]+/).filter(x=>/^https?:/.test(x)).map((u,i)=>`<a class="link" href="${esc(u)}" target="_blank" rel="noopener">Abrir currículo${i?' '+(i+1):''}</a>`).join(' '):esc(c.cv||'');
+ $('#md').innerHTML=`<div role="dialog" aria-modal="true" class="wide"><h2>${esc(c.nome)}</h2><div class="sub">${esc([c.tel,c.email].filter(Boolean).join(' · '))} · recebido em ${fdh(c.recebido)}</div>
+ ${cv?`<p>${cv}</p>`:''}
+ <form id="cdf"><div class="g2"><div><label for="k_et">Etapa</label><select id="k_et">${ETAPAS.map(x=>`<option ${x==(c.etapa||'Novo')?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div><label for="k_fr">Franquia</label><select id="k_fr">${frOpts(c.fr)}</select></div></div>
+ <label for="k_vg">Processo seletivo (vaga)</label><select id="k_vg"><option value="">—</option>${rs.map(a=>`<option value="${esc(a.id)}" ${a.id==c.vaga?'selected':''}>${esc((a.vaga||acTit(a))+' — '+nm('fr',a.fr))}</option>`).join('')}</select>
+ <label for="k_nt">Anotações da equipe</label><textarea id="k_nt" rows="3">${esc(c.notas)}</textarea>
+ <div id="kerr" class="err" hidden></div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" type="submit">Salvar</button>${c.etapa!='Contratado'?'<button class="btn s" type="button" data-a="contratar" data-x="'+esc(id)+'">Contratar e criar funcionário</button>':''}<button class="btn g" type="button" data-a="delCand" data-x="${esc(id)}">Excluir candidato</button><button class="btn g" type="button" data-a="cl">Fechar</button></div></form>
+ <details style="margin-top:14px"><summary>Respostas do formulário</summary>${(c.respostas||[]).map(x=>`<div class="dl"><small>${esc(x.p)}</small><div>${esc(x.r)}</div></div>`).join('')}</details></div>`;$('#md').hidden=false;
+ $('#cdf').addEventListener('submit',async e=>{e.preventDefault();const o={...c,etapa:$('#k_et').value,fr:$('#k_fr').value,vaga:$('#k_vg').value,notas:$('#k_nt').value.trim()};delete o.id;
+  try{await setDoc(doc(db,'cand',id),o);fechar();toast('Candidato atualizado.')}catch(x){const er=$('#kerr');er.textContent='Não foi possível salvar.';er.hidden=false}})}
+async function contratar(id){const c=S.cand.find(x=>x.id==id),fr=$('#k_fr').value,vg=$('#k_vg').value,er=$('#kerr');
+ if(!fr){er.textContent='Escolha a franquia antes de contratar.';er.hidden=false;return}
+ const vaga=S.acoes.find(a=>a.id==vg);
+ try{const ref=doc(collection(db,'fu'));
+  await setDoc(ref,{nome:c.nome,tel:c.tel||'',cargo:vaga?vaga.vaga||'':'',dep:'',fr,adm:hoje(),status:'Ativo',deslig:'',motivoDeslig:'',origem:'Candidato',criado:hoje()});
+  const o={...c,etapa:'Contratado',fr,vaga:vg,notas:$('#k_nt').value.trim(),fuId:ref.id};delete o.id;await setDoc(doc(db,'cand',id),o);
+  if(vaga){const a={...vaga,contratados:[...new Set([...(vaga.contratados||[]),ref.id])]};delete a.id;await setDoc(doc(db,'acoes',vaga.id),a)}
+  fechar();toast(c.nome+' agora é funcionário(a). Confira a data de admissão na ficha.')}
+ catch(x){er.textContent='Não foi possível concluir ('+(x.code||'erro')+').';er.hidden=false}}
+
+/* Calendário */
+function cal(){const t=hoje(),ev=[];
+ if(EDIT)S.ac.filter(a=>a.prox&&a.status=='Pendente').forEach(a=>ev.push([a.prox,`Acompanhamento — ${quem(a,false)}`]));
+ if(can('acoes'))S.acoes.filter(a=>a.data&&['Planejada','Em andamento'].includes(a.status)).forEach(a=>ev.push([a.data,`${esc(tipoN(a.tipo))}: ${esc(acTit(a))} — ${esc(nm('fr',a.fr))}`]));
+ if(can('de'))S.de.filter(d=>d.prazo&&d.status!='Concluída').forEach(d=>ev.push([d.prazo,`Prazo da demanda — ${esc(d.titulo)}`]));
+ ev.sort((a,b)=>a[0].localeCompare(b[0]));
+ return `<h1>Calendário</h1><div class="sub">Próximos compromissos e prazos</div><div class="card">${ev.length?ev.map(e=>`<div class="al"><b ${e[0]<t?'style="color:var(--wine)"':''}>${fd(e[0])}</b> — ${e[1]}${e[0]<t?' <span class="tag bad">atrasado</span>':''}</div>`).join(''):vazio('Nada agendado.')}</div>`}
+
+/* Acessos */
+const chkA=(pre,secs)=>VSEC.map(s=>`<label class="ck"><input type="checkbox" id="${pre}_${s[0]}" data-s="${s[0]}" ${secs.includes(s[0])?'checked':''}> ${s[1]}</label>`).join('');
+const chkF=(pre,frs,todas)=>`<label class="ck"><input type="checkbox" id="${pre}_todas" data-t="1" ${todas?'checked':''}> <b>Todas as franquias</b></label>`+S.fr.map(f=>`<label class="ck"><input type="checkbox" id="${pre}_f_${esc(f.id)}" data-f="${esc(f.id)}" ${frs.includes(f.id)?'checked':''}> ${esc(f.nome)}</label>`).join('');
+const lerAcc=el=>({secs:[...el.querySelectorAll('[data-s]')].filter(c=>c.checked).map(c=>c.dataset.s),frs:[...el.querySelectorAll('[data-f]')].filter(c=>c.checked).map(c=>c.dataset.f),todas:!!el.querySelector('[data-t]')?.checked});
+function accH(){if(!EDIT)return '';
+ const ids=Object.keys(ACC).sort((a,b)=>(ACC[a].nome||'').localeCompare(ACC[b].nome||''));
+ return `<h1>Acessos</h1><div class="sub">Logins de visualização: o que cada pessoa vê e de quais franquias</div>
+ <div class="note">Gestores veem <b>só as franquias marcadas</b>. Atestados, acompanhamentos, candidatos e relatos sigilosos nunca são liberados: as regras do servidor bloqueiam. Diagnósticos só aparecem para gestores quando têm 5 ou mais respostas.</div>
+ <form class="card" id="nf"><h2>Criar login de visualização</h2>
+  <div class="g2"><div><label for="n_nome">Nome <span class="req">*</span></label><input id="n_nome" required></div><div><label for="n_email">E-mail <span class="req">*</span></label><input id="n_email" type="email" required></div></div>
+  <label for="n_senha">Senha provisória (mínimo 6 caracteres) <span class="req">*</span></label><input id="n_senha" type="text" minlength="6" required autocomplete="off">
+  <label>Áreas liberadas</label><div class="cks">${chkA('n',['dash','fr','fu','acoes','de'])}</div>
+  <label>Franquias</label><div class="cks">${chkF('n',[],false)}</div>
+  <div id="nerr" class="err" hidden></div><button class="btn s" type="submit" id="nbtn">Criar login</button></form>
+ <div class="card"><h2>Pessoas com acesso</h2>${ids.length?ids.map(id=>{const a=ACC[id];return `<div class="pr" data-id="${esc(id)}"><div><b>${esc(a.nome||'Sem nome')}</b><br><small class="kl">${esc(a.email||'')}</small></div><div><small class="kl">Áreas</small><div class="cks">${chkA('p_'+esc(id),a.secs||[])}</div></div><div><small class="kl">Franquias</small><div class="cks">${chkF('p_'+esc(id),a.frs||[],a.todas)}</div></div>
+  <div class="pa"><button class="btn" data-a="saveAcc" data-x="${esc(id)}">Salvar</button><button class="btn g" data-a="resetP" data-x="${esc(id)}">Enviar nova senha</button><button class="btn g" data-a="rmAcc" data-x="${esc(id)}">Remover acesso</button></div></div>`}).join(''):vazio('Nenhum login de visualização criado ainda.')}</div>`}
+let secApp=null;
+async function criarLogin(){const er=$('#nerr'),b=$('#nbtn');er.hidden=true;
+ const nome=$('#n_nome').value.trim(),email=$('#n_email').value.trim().toLowerCase(),senha=$('#n_senha').value,a=lerAcc($('#nf'));
+ if(!nome||!email||senha.length<6){er.textContent='Preencha nome, e-mail e uma senha com pelo menos 6 caracteres.';er.hidden=false;return}
+ if(!a.todas&&!a.frs.length){er.textContent='Marque ao menos uma franquia (ou "Todas as franquias").';er.hidden=false;return}
+ b.disabled=true;b.textContent='Criando…';
+ try{secApp=secApp||initializeApp(firebaseConfig,'criador');const sa=getAuth(secApp);
+  const cred=await createUserWithEmailAndPassword(sa,email,senha);await signOut(sa);
+  await setDoc(doc(db,'acessos',cred.user.uid),{nome,email,...a});
+  toast(`Login criado para ${nome}. Passe o e-mail e a senha provisória para a pessoa.`);render()}
+ catch(e){b.disabled=false;b.textContent='Criar login';er.textContent=e.code=='auth/email-already-in-use'?'Já existe um login com este e-mail.':e.code=='auth/invalid-email'?'E-mail inválido.':e.code=='auth/weak-password'?'Senha fraca: use pelo menos 6 caracteres.':'Não foi possível criar o login ('+(e.code||'erro')+').';er.hidden=false}}
+
+/* ---------- Formulários ---------- */
+function opts(t,ctx){
+ if(Array.isArray(t))return t.map(x=>Array.isArray(x)?x:[x,x]);
+ if(t=='@fr')return S.fr.map(x=>[x.id,x.nome]);
+ if(t=='@fu'){const l=ctx&&ctx.fr?S.fu.filter(u=>u.fr==ctx.fr):S.fu;return l.map(x=>[x.id,x.nome+(x.status=='Inativo'?' (desligado)':'')])}
+ return []}
+function campo(f,r,ctx){const[n,l,t,req,flag]=f,v=r[n]??'',fid='f_'+n,sg=flag=='sig'?' <span class="tag">sigiloso</span>':'',lab=`<label for="${fid}">${esc(l)}${req?' <span class="req">*</span>':''}${sg}</label>`;
+ if(t=='multi'){const sel=Array.isArray(v)?v:[],l2=ctx&&ctx.fr?S.fu.filter(u=>u.fr==ctx.fr&&(u.status!='Inativo'||sel.includes(u.id))):[];
+  return `<label>${esc(l)}</label><div class="cks multi" data-n="${n}">${!ctx||!ctx.fr?'<span class="kl">Escolha a franquia para ver os funcionários.</span>':l2.length?l2.map(u=>`<label class="ck"><input type="checkbox" name="${n}" value="${esc(u.id)}" ${sel.includes(u.id)?'checked':''}> ${esc(u.nome)}</label>`).join(''):'<span class="kl">Nenhum funcionário ativo nesta franquia.</span>'}</div>`}
+ if(Array.isArray(t)||(typeof t=='string'&&t[0]=='@'))return lab+`<select id="${fid}" name="${n}"><option value="">—</option>${opts(t,ctx).map(x=>`<option value="${esc(x[0])}" ${x[0]==v?'selected':''}>${esc(x[1])}</option>`).join('')}</select>`;
+ if(t=='text')return lab+`<textarea id="${fid}" name="${n}" rows="3">${esc(v)}</textarea>`;
+ return lab+`<input id="${fid}" name="${n}" type="${t||'text'}" value="${esc(v)}">`}
+function lerForm(fm){const d={};fm.querySelectorAll('.multi').forEach(m=>d[m.dataset.n]=[]);
+ for(const[n,v]of new FormData(fm)){if(Array.isArray(d[n]))d[n].push(String(v));else d[n]=String(v).trim()}return d}
+const camposDe=(k,r)=>k=='acoes'?[...BASE_TOP,...((TIPOS[r.tipo]||{}).f||[]),...BASE_BOT]:E[k].f.filter(f=>f[4]!='nf');
+function abrirForm(k,id,pre){const base=id?(S[k].find(x=>x.id==id)||{}):(pre||{});const r={...base};
+ if(k=='acoes'){if(id)Object.assign(r,S.acoes_sig.find(x=>x.id==id)||{});if(!id){r.status=r.status||'Planejada';r.data=r.data||hoje()}}
+ if(!id&&r.fu&&!r.fr)r.fr=(S.fu.find(u=>u.id==r.fu)||{}).fr||'';
+ if(!id&&k!='acoes'&&E[k].f.some(f=>f[0]=='data')&&!r.data)r.data=hoje();
+ FORM={k,id:id||'',r};desenharForm()}
+function desenharForm(){const{k,id,r}=FORM,fs=camposDe(k,r),ctx={fr:r.fr};
+ const tit=k=='acoes'?(id?'Editar ação de RH':'Nova ação de RH'):(id?'Editar ':'Novo(a) ')+E[k].s;
+ const baixa=k=='acoes'&&r.tipo=='dl'?`<label class="ck" style="margin-bottom:12px"><input type="checkbox" id="f_baixa" ${id?'':'checked'}> Registrar o desligamento na ficha do funcionário</label>`:'';
+ $('#md').innerHTML=`<div role="dialog" aria-modal="true"><h2>${tit}</h2><form id="fm">${fs.map(f=>campo(f,r,ctx)).join('')}${baixa}<div id="ferr" class="err" hidden></div><div style="display:flex;gap:8px"><button class="btn" type="submit" id="fsv">Salvar</button><button class="btn g" type="button" data-a="cl">Cancelar</button></div></form></div>`;
+ $('#md').hidden=false;const fm=$('#fm');
+ fm.addEventListener('submit',ev=>{ev.preventDefault();salvar()});
+ fm.addEventListener('change',ev=>{const n=ev.target.name;if((n=='fr'||n=='tipo')&&(k=='acoes'||fs.some(f=>f[2]=='@fu'||f[2]=='multi'))){Object.assign(FORM.r,lerForm(fm));desenharForm();const el=$('#f_'+n);el&&el.focus()}})}
+async function salvar(){const{k,id}=FORM,fm=$('#fm'),d=lerForm(fm),fs=camposDe(k,{...FORM.r,...d}),er=$('#ferr');
+ const falta=fs.filter(f=>f[3]&&(Array.isArray(d[f[0]])?!d[f[0]].length:!d[f[0]])).map(f=>f[1]);
+ if(k=='ac'&&!d.fu&&!(d.participantes||[]).length&&!d.pessoa)falta.push('quem foi atendido (funcionário, participantes ou pessoa)');
+ if(falta.length){er.textContent='Preencha: '+falta.join(', ')+'.';er.hidden=false;return}
+ const baixa=$('#f_baixa')?.checked,btn=$('#fsv');btn.disabled=true;btn.textContent='Salvando…';
+ try{const old=id?S[k].find(x=>x.id==id):null,ref=id?doc(db,k,id):doc(collection(db,k));
+  if(k=='acoes'){const pub={criado:old?.criado||hoje()},sg={};let temSig=false;
+   fs.forEach(f=>{const n=f[0],v=d[n]??(f[2]=='multi'?[]:'');if(f[4]=='sig'){sg[n]=v;temSig=true}else pub[n]=v});
+   if(old&&Array.isArray(old.contratados)&&!fs.some(f=>f[0]=='contratados'))delete pub.contratados;
+   await setDoc(ref,pub);
+   if(temSig)await setDoc(doc(db,'acoes_sig',ref.id),sg);else if(id)await deleteDoc(doc(db,'acoes_sig',id)).catch(()=>{});
+   if(pub.tipo=='dl'&&baixa&&pub.fu){const u=S.fu.find(x=>x.id==pub.fu);if(u){const o={...u,status:'Inativo',deslig:pub.dataSaida,motivoDeslig:pub.motivo};delete o.id;await setDoc(doc(db,'fu',u.id),o)}}}
+  else{const o=old?{...old,...d}:{...d,criado:hoje()};delete o.id;
+   if(k=='ac'){if(!old)Object.assign(o,{registradoPor:MYID,registradoNome:MYNOME||MYEMAIL,registradoPapel:MYPAPEL,registradoEm:agora()});else Object.assign(o,{editadoPor:MYID,editadoNome:MYNOME||MYEMAIL,editadoEm:agora()})}
+   await setDoc(ref,o)}
+  fechar();toast('Salvo.')}
+ catch(err){btn.disabled=false;btn.textContent='Salvar';er.textContent=err&&err.code=='permission-denied'?'Você não tem permissão para salvar aqui.':'Não foi possível salvar. Verifique a conexão e tente de novo.';er.hidden=false}}
+const fechar=()=>{$('#md').hidden=true;$('#md').innerHTML='';FORM=null;agendar()};
+function confirmar(titulo,texto,acao,x,y){$('#md').innerHTML=`<div role="dialog" aria-modal="true"><h2>${titulo}</h2><p>${texto}</p><div style="display:flex;gap:8px"><button class="btn s" data-a="${acao}" data-x="${esc(x)}" data-y="${esc(y||'')}">Confirmar</button><button class="btn g" data-a="cl">Cancelar</button></div></div>`;$('#md').hidden=false}
+function pedirExclusao(k,id){
+ if(k=='fr'){const n=S.fu.filter(u=>u.fr==id).length+S.acoes.filter(a=>a.fr==id).length+S.de.filter(d=>d.fr==id).length+S.diag.filter(g=>g.fr==id).length;if(n){toast(`Esta franquia tem ${n} registro(s) ligados (funcionários, ações, demandas ou diagnósticos). Exclua-os ou marque a franquia como Inativa.`);return}}
+ if(k=='fu'){const n=['at','ac','de'].reduce((s,c)=>s+S[c].filter(x=>x.fu==id).length,0)+S.acoes.filter(a=>a.fu==id||(a.participantes||[]).includes(id)).length;if(n){toast(`Este funcionário tem ${n} registro(s) ligados. Marque-o como Inativo em vez de excluir.`);return}}
+ if(k=='ac'&&!SUP()){toast('Somente a supervisora pode excluir acompanhamentos.');return}
+ const r=S[k].find(x=>x.id==id)||{};
+ confirmar('Excluir registro?',`<b>${esc(r.nome||r.titulo||(k=='acoes'?acTit(r):'')||nm('fu',r.fu))}</b> será removido(a) para todos. Não dá para desfazer.`,'delok',k,id)}
+async function excluir(k,id){try{await deleteDoc(doc(db,k,id));if(k=='acoes')await deleteDoc(doc(db,'acoes_sig',id)).catch(()=>{});if(k=='fr'&&fv==id)fv=null;if(k=='fu'&&pf==id)pf=null;if(k=='diag'&&dv==id)dv=null;fechar();toast('Excluído.')}catch(e){fechar();toast('Sem permissão para excluir.')}}
+
+/* Supervisão */
+function verAc(id){const r=S.ac.find(x=>x.id==id);if(!r)return;
+ const L2=(l,v)=>v?`<div class="dl"><small>${l}</small><div>${esc(v).replace(/\n/g,'<br>')}</div></div>`:'';
+ const podeRev=SUP()&&String(r.registradoPapel||'').toLowerCase()!='supervisora';
+ $('#md').innerHTML=`<div role="dialog" aria-modal="true"><h2>${esc(r.tipo||'Acompanhamento')} — ${quem(r,false)}</h2>
+ <div class="sub">${fd(r.data)} · registrado por ${esc(r.registradoNome||'—')} em ${fdh(r.registradoEm)}${r.editadoEm?` · editado por ${esc(r.editadoNome||'—')} em ${fdh(r.editadoEm)}`:''}</div>
+ ${L2('Modalidade',r.modalidade)}${L2('Franquia',r.fr&&nm('fr',r.fr))}${(r.participantes||[]).length?`<div class="dl"><small>Participantes</small><div>${r.participantes.map(x=>esc(nm('fu',x))).join(', ')}</div></div>`:''}${L2('Motivo',r.motivo)}${L2('Responsável',r.resp)}${L2('Relato',r.relato)}${L2('Orientações / encaminhamentos',r.orient)}${L2('Próximo acompanhamento',r.prox&&fd(r.prox))}
+ <div class="note"><b>Supervisão:</b> ${supTag(r)}${r.supEm?`<br><small>${esc(r.supNome||'')} · ${fdh(r.supEm)}</small>`:''}${r.supObs?`<div style="margin-top:6px">${esc(r.supObs).replace(/\n/g,'<br>')}</div>`:''}</div>
+ ${podeRev?`<form id="rf"><label for="r_st">Resultado da revisão</label><select id="r_st"><option ${r.supStatus=='Revisado'?'selected':''}>Revisado</option><option ${r.supStatus=='Revisado com observações'?'selected':''}>Revisado com observações</option></select>
+ <label for="r_obs">Observações da supervisão</label><textarea id="r_obs" rows="4">${esc(r.supObs||'')}</textarea><div id="rerr" class="err" hidden></div>
+ <div style="display:flex;gap:8px"><button class="btn s" type="submit" id="rbtn">Salvar revisão</button><button class="btn g" type="button" data-a="cl">Fechar</button></div></form>`:`<button class="btn g" data-a="cl">Fechar</button>`}</div>`;
+ $('#md').hidden=false;const rf=$('#rf');rf&&rf.addEventListener('submit',ev=>{ev.preventDefault();salvarRev(id)})}
+async function salvarRev(id){const r=S.ac.find(x=>x.id==id),b=$('#rbtn');b.disabled=true;b.textContent='Salvando…';
+ const o={...r,supStatus:$('#r_st').value,supObs:$('#r_obs').value.trim(),supPor:MYID,supNome:MYNOME||MYEMAIL,supEm:agora()};delete o.id;
+ try{await setDoc(doc(db,'ac',id),o);fechar();toast('Revisão registrada.')}catch(e){b.disabled=false;b.textContent='Salvar revisão';const er=$('#rerr');er.textContent='Não foi possível salvar a revisão ('+(e.code||'erro')+').';er.hidden=false}}
+
+/* ---------- Ações de clique ---------- */
+const ACT={
+ go:v=>{cur=v;q='';pf=fv=dv=null;render();scrollTo(0,0)},
+ frp:id=>{fv=id;pf=dv=null;render();scrollTo(0,0)},
+ prof:id=>{pf=id;fechar();render();scrollTo(0,0)},
+ dgp:id=>{dv=id;pf=null;render();scrollTo(0,0)},
+ back:()=>{if(pf)pf=null;else if(dv)dv=null;else fv=null;render()},
+ novo:(k,pre)=>{const o={};if(pre){const[a,b]=pre.split(':');o[a]=b}abrirForm(k,'',o)},
+ edit:(k,id)=>abrirForm(k,id),
+ del:(k,id)=>pedirExclusao(k,id),delok:(k,id)=>excluir(k,id),
+ verAc:id=>verAc(id),verAcao:id=>verAcao(id),impDiag:()=>impDiag(),editDiag:id=>editDiag(id),
+ impCand:()=>impCand(),verCand:id=>verCand(id),contratar:id=>contratar(id),
+ delCand:id=>confirmar('Excluir candidato?','Os dados pessoais desta pessoa serão apagados do sistema. Não dá para desfazer.','delok','cand',id),
+ cl:()=>fechar(),sair:()=>signOut(auth),reset:()=>esqueci(),
+ saveAcc:async id=>{const el=document.querySelector(`.pr[data-id="${CSS.escape(id)}"]`),a=lerAcc(el);try{await setDoc(doc(db,'acessos',id),{...ACC[id],...a});toast('Acesso atualizado.')}catch(e){toast('Não foi possível salvar.')}},
+ resetP:async id=>{try{await sendPasswordResetEmail(auth,ACC[id].email);toast('Link para nova senha enviado para '+ACC[id].email+'.')}catch(e){toast('Não foi possível enviar o e-mail.')}},
+ rmAcc:id=>confirmar('Remover acesso?',`${esc(ACC[id].nome||ACC[id].email)} não verá mais nada no sistema. O login continua existindo, mas sem acesso.`,'rmOk',id),
+ rmOk:async id=>{try{await deleteDoc(doc(db,'acessos',id));fechar();toast('Acesso removido.');render()}catch(e){fechar();toast('Não foi possível remover.')}}
+};
+document.addEventListener('click',e=>{if(e.target.id=='md'){fechar();return}const t=e.target.closest('[data-a]');if(!t)return;e.preventDefault();const f=ACT[t.dataset.a];f&&f(t.dataset.x,t.dataset.y)});
+document.addEventListener('submit',e=>{if(e.target.id=='nf'){e.preventDefault();criarLogin()}});
+document.addEventListener('keydown',e=>{if(e.key=='Escape'&&!$('#md').hidden)fechar()});
+document.addEventListener('change',e=>{if(e.target.id=='ft'){fTipo=e.target.value;render()}if(e.target.id=='fe'){fEtapa=e.target.value;render()}});
+document.addEventListener('input',e=>{if(e.target.id!='q')return;q=e.target.value;const p=e.target.selectionStart;render();const i=$('#q');if(i){i.focus();i.setSelectionRange(p,p)}});
+</script>
+
+
+
+
+
+</body></html>
